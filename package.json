@@ -1,7 +1,7 @@
 {
   "name": "w_vue_antd_components",
   "description": "A Vue.js project",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "author": "wangyifan <1162652833@qq.com>",
   "license": "MIT",
   "private": false,
@@ -16,7 +16,6 @@
     "lodash": "^4.17.15",
     "moment": "^2.24.0",
     "vue": "^2.6.11",
-    "vue-i18n": "^8.18.2",
     "vuex": "^3.4.0"
   },
   "browserslist": [
