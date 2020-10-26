@@ -6,13 +6,13 @@
         to="/"
         :class="['logo', isMobile ? null : 'pc', headerTheme]"
       >
-        <img width="32" src="../../assets/img/logo.png" />
+        <img width="32" :src="logoSrc" />
         <h1 v-if="!isMobile">{{ systemName }}</h1>
       </router-link>
       <a-divider v-if="isMobile" type="vertical" />
       <div :class="['logo', theme]">
         <router-link to="/dashboard">
-          <img src="../../assets/img/logo.png" />
+          <img :src="logoSrc" />
           <h1>{{ systemName }}</h1>
         </router-link>
       </div>
@@ -45,6 +45,10 @@ export default {
     collapsed:{
       type:Boolean,
       default:false
+    },
+    logoSrc:{
+      type:String,
+      default:'../../assets/img/logo.png'
     },
     user:{
       type:Object,
