@@ -2,8 +2,16 @@
 import wTable from './MyTable/index.js'
 import wUpload from './upload/index.js'
 import wForm from './MyForm/index.js'
-
-const components = [wTable, wUpload, wForm]
+import AdminHeader from './AdminHeader/index.js'
+// import 
+import HttpRequest, {
+  setToken,
+  formatSearch,
+  checkToken,
+  getRealToken,
+  removeToken
+} from '@/utils/request/request'
+const components = [wTable, wUpload, wForm, AdminHeader]
 const install = function(vue) {
   /* istanbul ignore if */
   if (install.installed) return;
@@ -18,7 +26,16 @@ if (typeof window !== 'undefined' && window.Vue) {
 };
 
 export default {
+  // js方法相关
+  HttpRequest,
+  setToken,
+  formatSearch,
+  checkToken,
+  getRealToken,
+  removeToken,
+  // 组件相关
   install,
+  AdminHeader,
   wTable,
   wUpload,
   wForm

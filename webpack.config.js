@@ -12,11 +12,14 @@ module.exports = {
     umdNamedDefine: true // 会对 UMD 的构建过程中的 AMD 模块进行命名。否则就使用匿名的 define
   },
   externals: {
-    vue: "vue",
     'ant-design-vue':'ant-design-vue',
-    'less-loader':'less-loader',
     axios: "axios",
+    'less-loader':'less-loader',
+    'js-cookie':'js-cookie',
+    vue: "vue",
     vuex:'vuex',
+    'lodash':'lodash',
+    'vue-socket.io':'vue-socket.io',
     moment:'moment'
   },
   module: {
@@ -57,7 +60,8 @@ module.exports = {
   },
   resolve: {
     alias: {
-      'vue$': 'vue/dist/vue.esm.js'
+      'vue$': 'vue/dist/vue.esm.js',
+      '@': resolve('src')
     },
     extensions: ['*', '.js', '.vue', '.json']
   },
