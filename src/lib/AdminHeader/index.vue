@@ -48,7 +48,7 @@ export default {
     },
     logoSrc:{
       type:String,
-      default:'../../assets/img/logo.png'
+      default: require('../../assets/img/logo.png')
     },
     user:{
       type:Object,
