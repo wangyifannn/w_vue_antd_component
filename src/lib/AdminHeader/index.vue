@@ -6,13 +6,13 @@
         to="/"
         :class="['logo', isMobile ? null : 'pc', headerTheme]"
       >
-        <img width="32" src="@/assets/img/logo.png" />
+        <img width="32" src="../../assets/img/logo.png" />
         <h1 v-if="!isMobile">{{ systemName }}</h1>
       </router-link>
       <a-divider v-if="isMobile" type="vertical" />
       <div :class="['logo', theme]">
         <router-link to="/dashboard">
-          <img src="@/assets/img/logo.png" />
+          <img src="../../assets/img/logo.png" />
           <h1>{{ systemName }}</h1>
         </router-link>
       </div>
@@ -41,32 +41,41 @@ import { projectDataApi } from '@/services/common'
 export default {
   name: 'AdminHeader',
   components: { HeaderAvatar, ProjectMenu },
-  props: ['collapsed','user'],
+  props:{
+    collapsed:{
+      type:Boolean,
+      default:false
+    },
+    user:{
+      type:Object,
+      default:()=>{}
+    },
+    isMobile:{
+      type:Boolean,
+      default:false
+    },
+    layout:{
+      type:String,
+      default:'side'
+    },
+    systemName:{
+      type:String,
+      default:'家庭健康服务平台'
+    },
+    pageWidth:{
+      // 内容区域宽度，fixed:固定宽度，fluid:流式宽度
+      type:String,
+      default:'fixed'
+    }
+  },
   data() {
     return {
+      headerTheme:'light',
       searchActive: false,
       projectData: []
     }
   },
   computed: {
-    ...mapState('setting', [
-      'theme',
-      'isMobile',
-      'layout',
-      'systemName',
-      'lang',
-      'pageWidth'
-    ]),
-    headerTheme() {
-      if (
-        this.layout == 'side' &&
-        this.theme.mode == 'dark' &&
-        !this.isMobile
-      ) {
-        return 'light'
-      }
-      return this.theme.mode
-    },
     menuWidth() {
       const { layout, searchActive } = this
       const headWidth = layout === 'head' ? '100% - 188px' : '100%'
@@ -96,12 +105,10 @@ export default {
             { name: '信息库', path: "http://yapi.com" }
           ]
         })
-      this.setProjectData(this.projectData)
     },
     toggleCollapse() {
       this.$emit('toggleCollapse')
     },
-    ...mapMutations('setting', ['setProjectData'])
   }
 }
 </script>
