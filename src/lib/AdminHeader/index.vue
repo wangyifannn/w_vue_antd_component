@@ -6,7 +6,6 @@
         to="/"
         :class="['logo', isMobile ? null : 'pc', headerTheme]"
       >
-      {{logoSrc}} {{defaultLog}}
         <img width="32" :src="logoSrc || defaultLog" />
         <h1 v-if="!isMobile">{{ systemName }}</h1>
       </router-link>
@@ -36,8 +35,6 @@
 <script>
 import HeaderAvatar from './HeaderAvatar'
 import ProjectMenu from '@/lib/menu/ProjectMenu'
-
-import { mapState, mapMutations } from 'vuex'
 export default {
   name: 'AdminHeader',
   components: { HeaderAvatar, ProjectMenu },
