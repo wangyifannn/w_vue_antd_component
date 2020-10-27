@@ -42,10 +42,10 @@ function getBase64(img, callback) {
   reader.readAsDataURL(img)
 }
 export default {
-  name:'wUpload',
+  name: 'wUpload',
   props: {
-    uploadApi:{
-      type:Function
+    uploadApi: {
+      type: Function
     },
     showTip: {
       type: Boolean,
@@ -53,7 +53,7 @@ export default {
     },
     showUploadList: {
       // eslint-disable-next-line vue/require-prop-type-constructor
-      type: Array | Object,
+      type: Boolean | Object,
       default() {
         return true
       }
@@ -78,14 +78,17 @@ export default {
       type: Number,
       default: 1
     },
-    defaultList: {
+    defaultFileList: {
       type: Array,
-      default: () => []
+      default: () => {
+        return []
+      }
     },
     uploadText: {
       type: String,
       default: '上传照片'
     },
+    // 上传完成后，抛出的更改那个字段的名字
     name: {
       type: String,
       default: null
@@ -107,6 +110,14 @@ export default {
       loading: false,
       previewImage: '',
       previewVisible: false
+    }
+  },
+  created() {},
+  watch: {
+    defaultFileList(val) {
+      if (val && val.length) {
+        this.fileList = val
+      }
     }
   },
   methods: {
@@ -143,7 +154,7 @@ export default {
         return
       }
       this.loading = true
-      const data = await uploadApi(file, progress => {})
+      const data = await this.uploadApi(file, progress => {})
       this.fileList.push({
         uid: file.file.name + this._.random(0, 100),
         name: file.file.name,
@@ -166,7 +177,7 @@ export default {
 .avatar_radius {
   .ant-upload-select-picture-card,
   .ant-upload-list-picture-card-container,
-   .ant-upload-list-picture-card .ant-upload-list-item {
+  .ant-upload-list-picture-card .ant-upload-list-item {
     border-radius: 50%;
     overflow: hidden;
     padding: 0; // 图片和边框的距离

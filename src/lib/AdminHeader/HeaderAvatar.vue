@@ -1,8 +1,8 @@
 <template>
   <a-dropdown>
     <div class="header-avatar" style="cursor: pointer">
-      <a-avatar class="avatar" size="small" shape="circle" :src="user.avatar" />
-      <span class="name">{{ user.name }}</span>
+      <a-avatar class="avatar" v-if="user.avatar" size="small" shape="circle" :src="user.avatar" />
+      <span class="name" v-if="user.name">{{ user.name }}</span>
     </div>
     <a-menu :class="['avatar-menu']" slot="overlay">
       <a-menu-item>
@@ -28,7 +28,12 @@ export default {
   props:{
     user:{
       type:Object,
-      default:null
+      default:()=>{
+        return {
+          avatar:'',
+          name:''
+        }
+      }
     }
   },
   methods: {

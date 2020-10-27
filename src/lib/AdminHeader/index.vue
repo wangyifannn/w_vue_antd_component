@@ -6,13 +6,13 @@
         to="/"
         :class="['logo', isMobile ? null : 'pc', headerTheme]"
       >
-        <img width="32" :src="logoSrc" />
+        <img width="32" :src="logoSrc || defaultLog" />
         <h1 v-if="!isMobile">{{ systemName }}</h1>
       </router-link>
       <a-divider v-if="isMobile" type="vertical" />
       <div :class="['logo', theme]">
         <router-link to="/dashboard">
-          <img :src="logoSrc" />
+          <img :src="logoSrc || defaultLog" />
           <h1>{{ systemName }}</h1>
         </router-link>
       </div>
@@ -48,7 +48,7 @@ export default {
     },
     logoSrc:{
       type:String,
-      default: require('../../assets/img/logo.png')
+      default:''
     },
     user:{
       type:Object,
@@ -74,6 +74,7 @@ export default {
   },
   data() {
     return {
+      defaultLog: require('../../assets/img/logo.png'),
       headerTheme:'light',
       searchActive: false,
       projectData: []
