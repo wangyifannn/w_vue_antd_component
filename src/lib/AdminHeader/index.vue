@@ -6,6 +6,7 @@
         to="/"
         :class="['logo', isMobile ? null : 'pc', headerTheme]"
       >
+      {{logoSrc}} {{defaultLog}}
         <img width="32" :src="logoSrc || defaultLog" />
         <h1 v-if="!isMobile">{{ systemName }}</h1>
       </router-link>
@@ -37,7 +38,6 @@ import HeaderAvatar from './HeaderAvatar'
 import ProjectMenu from '@/lib/menu/ProjectMenu'
 
 import { mapState, mapMutations } from 'vuex'
-import { projectDataApi } from '@/services/common'
 export default {
   name: 'AdminHeader',
   components: { HeaderAvatar, ProjectMenu },
@@ -45,6 +45,15 @@ export default {
     collapsed:{
       type:Boolean,
       default:false
+    },
+    projectData:{
+      type:Array,
+      default:()=>{
+        return [
+            { key:'ask', text: '咨询', url: 'http://taobao.com' },
+            { key:'system', text: '系统', url: "http://baidu.com" },
+        ]
+      }
     },
     logoSrc:{
       type:String,
@@ -77,7 +86,6 @@ export default {
       defaultLog: require('../../assets/img/logo.png'),
       headerTheme:'light',
       searchActive: false,
-      projectData: []
     }
   },
   computed: {
@@ -89,27 +97,10 @@ export default {
     }
   },
   mounted() {
-    this.getProjectData()
   },
   methods: {
     logoutHandle(){
       this.$emit('logout')
-    },
-    async getProjectData() {
-      await projectDataApi()
-        .then(res => {
-          this.projectData = res.data
-        })
-        .catch(err => {
-          console.log(err)
-          this.projectData = [
-            { name: '问诊管理', path: 'http://taobao.com' },
-            { name: '疫苗管理', path: "http://baidu.com" },
-            { name: '商城库存', path: "http://tianmao.com" },
-            { name: '回访管理', path: "http://vip.com"},
-            { name: '信息库', path: "http://yapi.com" }
-          ]
-        })
     },
     toggleCollapse() {
       this.$emit('toggleCollapse')

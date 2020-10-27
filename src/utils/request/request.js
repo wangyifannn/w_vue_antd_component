@@ -1,4 +1,5 @@
 import axios from 'axios'
+// import store from '@/store';
 import Cookie from 'js-cookie'
 import { message as Message } from 'ant-design-vue'
 // 跨域认证信息 header 名
@@ -8,27 +9,17 @@ export function getToken() {
   return Cookie.get(xsrfHeaderName)
 }
 export function getRealToken() {
-  const token = getToken() || ''
+  let token = getToken() || ''
+  // token = JSON.parse(token).token
+  console.log('token==', token)
   return token.replace('Bearer ', '')
 }
 /**
  * 设置认证信息
- * @param auth {Object}
+ * @param auth {string}
  */
-// 解析location中的参数
-export function formatSearch(search) {
-  var obj = {}
-  var str = search.substr(1)
-  var arr = str.split('&')
-  for (var i = 0; i < arr.length; i++) {
-    var newArr = arr[i].split('=')
-    obj[newArr[0]] = newArr[1]
-  }
-  // console.log(obj);
-  return obj
-}
-export function setToken(auth) {
-  Cookie.set(xsrfHeaderName, auth.token)
+export function setToken(token) {
+  Cookie.set(xsrfHeaderName, token)
   // 不设置cookie的过期时间
   // Cookie.set(xsrfHeaderName, 'Bearer ' + auth.token, {expires: auth.expireAt})
 }
@@ -41,6 +32,18 @@ export function checkToken() {
   } else {
     return false
   }
+}
+// 解析location中的参数
+export function formatSearch(search) {
+  var obj = {}
+  var str = search.substr(1)
+  var arr = str.split('&')
+  for (var i = 0; i < arr.length; i++) {
+    var newArr = arr[i].split('=')
+    obj[newArr[0]] = newArr[1]
+  }
+  // console.log(obj);
+  return obj
 }
 /**
  * 解析 url 中的参数
@@ -63,6 +66,42 @@ export function parseUrlParams(url) {
       value === 'true' ? true : value === 'false' ? false : value
   }
   return params
+}
+/**
+ * 加载 axios 拦截器
+ * @param interceptors
+ * @param options
+ */
+export function loadInterceptors(interceptors, options) {
+  const { request, response } = interceptors
+  // 加载请求拦截器
+  request.forEach(item => {
+    let { onFulfilled, onRejected } = item
+    if (!onFulfilled || typeof onFulfilled !== 'function') {
+      onFulfilled = config => config
+    }
+    if (!onRejected || typeof onRejected !== 'function') {
+      onRejected = error => Promise.reject(error)
+    }
+    axios.interceptors.request.use(
+      config => onFulfilled(config, options),
+      error => onRejected(error, options)
+    )
+  })
+  // 加载响应拦截器
+  response.forEach(item => {
+    let { onFulfilled, onRejected } = item
+    if (!onFulfilled || typeof onFulfilled !== 'function') {
+      onFulfilled = response => response
+    }
+    if (!onRejected || typeof onRejected !== 'function') {
+      onRejected = error => Promise.reject(error)
+    }
+    axios.interceptors.response.use(
+      response => onFulfilled(response, options),
+      error => onRejected(error, options)
+    )
+  })
 }
 // const addErrorLog = (errorInfo) => {
 //   const {
@@ -87,10 +126,11 @@ class HttpRequest {
   }
 
   getInsideConfig() {
+    console.log('getToken==', getToken())
     const config = {
       baseURL: this.baseUrl,
       headers: {
-        Authorization: getToken()
+        Authorization: 'Bearer ' + getToken()
       }
     }
     return config
@@ -122,15 +162,27 @@ class HttpRequest {
     instance.interceptors.response.use(
       res => {
         this.destroy()
-        const { status, data } = res
-        const dataCode = data.code
-        let redirectUrl = ''
-        let url = ''
-        // const origin = window.location.origin
-        const loginOrigin = window.location.origin // TODO:代替换为登录框架的域名
-        const page404 = loginOrigin + '/404'
-        console.log('dataCode==', dataCode)
-        switch (dataCode) {
+        return {
+          data: res.data,
+          status: res.status
+        }
+      },
+      error => {
+        console.log(error.response)
+        if (error.response && error.response.data)
+          Message.error(error.response.data.message)
+        this.destroy(url)
+        // addErrorLog(error.response);
+        // const { status, data } = res
+        // const errStatus = error.response.status
+        // let redirectUrl = ''
+        // let url = ''
+        // // const origin = window.location.origin
+        // const loginOrigin = window.location.origin // TODO:代替换为登录框架的域名
+        // const page404 = loginOrigin + '/404'
+        /*
+                console.log('errStatus==', errStatus)
+        switch (errStatus) {
           case 401:
             Message.error(res.data.message)
             return { code: data.code, message: data.message, stack: data.stack }
@@ -160,15 +212,11 @@ class HttpRequest {
             return {
               data: res.data.data,
               code: res.data.code,
+              message: res.data.code,
               status
             }
         }
-      },
-      error => {
-        if (error.response && error.response.data)
-          Message.error(error.response.data.message)
-        this.destroy(url)
-        // addErrorLog(error.response);
+        */
         return Promise.reject(error)
       }
     )
